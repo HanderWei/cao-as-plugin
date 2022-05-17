@@ -31,6 +31,8 @@ import java.util.*
 interface TaskLoadListener {
     fun onTaskLoad(tasks: List<TaskModel>)
     fun onInputParam(task: TaskModel)
+
+    fun showResults(tasks: List<TaskModel>)
 }
 
 class CaoTaskManager(private val listener: TaskLoadListener, private val project: Project) {
@@ -42,6 +44,9 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
     }
 
     val tasks = mutableListOf<TaskModel>()
+    val tempResult = mutableListOf<TaskModel>()
+
+    var currentTasks = mutableListOf<TaskModel>()
 
     fun loadData() {
         // 创建端口转发
@@ -78,25 +83,32 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
             listener.onInputParam(task)
             return
         }
-        val socket = Socket(HOST, PC_PORT)
-        val sink = socket.sink().buffer()
-        val source = socket.source().buffer()
-        sink.writeUtf8(TASK_TAG).writeUtf8("\n").flush()
-        sink.writeUtf8(Gson().toJson(task)).flush()
-        sink.writeUtf8("\n").flush()
-        val content = source.readUtf8Line()
-        when (task.outputType) {
-            OutputType.CLIPBOARD.value -> {
-                writeToClipboard(content, null)
-                showNotification(content)
+        if (task.options.isEmpty()) {
+            val socket = Socket(HOST, PC_PORT)
+            val sink = socket.sink().buffer()
+            val source = socket.source().buffer()
+            sink.writeUtf8(TASK_TAG).writeUtf8("\n").flush()
+            sink.writeUtf8(Gson().toJson(task)).flush()
+            sink.writeUtf8("\n").flush()
+            val content = source.readUtf8Line()
+            when (task.outputType) {
+                OutputType.CLIPBOARD.value -> {
+                    writeToClipboard(content, null)
+                    showNotification(content)
+                }
+                OutputType.FILE.value -> {
+                    saveToFile(content)
+                    showNotification(content)
+                }
+                OutputType.LIST.value -> {
+                    val listOfTaskObject: Type = object : TypeToken<ArrayList<TaskModel?>?>() {}.type
+                    tempResult.clear()
+                    tempResult.addAll(Gson().fromJson(content, listOfTaskObject))
+                    listener.showResults(tempResult)
+                }
             }
-            OutputType.FILE.value -> {
-                saveToFile(content)
-                showNotification(content)
-            }
-            OutputType.LIST.value -> {
-
-            }
+        } else {
+            listener.showResults(task.options)
         }
     }
 

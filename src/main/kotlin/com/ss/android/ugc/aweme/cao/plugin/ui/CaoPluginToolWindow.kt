@@ -24,19 +24,29 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
         object : TaskLoadListener {
             override fun onTaskLoad(tasks: List<TaskModel>) {
                 // 填充UI
-                tableModel.updateData(tasks)
-                updateTableMaxWidth()
+//                tableModel.updateData(tasks)
+//                updateTableMaxWidth()
+
+                taskList.updateTasks(tasks)
+                taskManager.currentTasks = tasks as MutableList<TaskModel>
             }
 
             override fun onInputParam(task: TaskModel) {
                 val dialog = InputParamDialog(project, task, taskManager)
                 dialog.showAndGet()
             }
+
+            override fun showResults(tasks: List<TaskModel>) {
+                taskList.updateTasks(tasks)
+                taskManager.currentTasks = tasks as MutableList<TaskModel>
+            }
         }
     }
 
     private val tableModel  = TaskTableModel()
     private val table = TaskTable(tableModel)
+
+    private val taskList = TaskList()
 
     init {
         showPanel()
@@ -56,19 +66,23 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
         queryField.preferredSize = Dimension(panel.width, 30)
 
         val taskPanel = SimpleToolWindowPanel(true, true)
+        taskList.addKeyListener(TaskKeyListener(this, taskManager))
+        taskList.addMouseListener(TaskMouseListener(this, taskManager))
 
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-        table.tableHeader?.reorderingAllowed = false
-        table.rowSelectionAllowed = true
-        table.fillsViewportHeight = true
-        table.setRowHeight(0, 200)
-        table.addMouseListener(TaskMouseListener(this, taskManager))
-        table.addKeyListener(TaskKeyListener(this, taskManager))
-        panel.add(JBScrollPane(table, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER)
-        updateTableMaxWidth()
+//        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+//        table.tableHeader?.reorderingAllowed = false
+//        table.rowSelectionAllowed = true
+//        table.fillsViewportHeight = true
+//        table.setRowHeight(0, 200)
+//        table.addMouseListener(TaskMouseListener(this, taskManager))
+//        table.addKeyListener(TaskKeyListener(this, taskManager))
+//        panel.add(JBScrollPane(table, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER)
+//        updateTableMaxWidth()
+
+        taskPanel.setContent(taskList)
 
         taskPanel.toolbar = queryField
-        taskPanel.setContent(table)
+//        taskPanel.setContent(table)
         setContent(taskPanel)
     }
 
@@ -78,10 +92,11 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
     }
 
     fun getSelectedTask(): TaskModel? {
-        val row = table.selectedRow
-        if (row < 0 || taskManager.tasks.isEmpty() || row >= taskManager.tasks.size ) {
+//        val row = table.selectedRow
+        val row = taskList.selectedIndex
+        if (row < 0 || taskManager.currentTasks.isEmpty() || row >= taskManager.currentTasks.size ) {
             return null
         }
-        return taskManager.tasks[row]
+        return taskManager.currentTasks[row]
     }
 }
