@@ -6,16 +6,10 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.openapi.vfs.VfsUtilCore
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.VirtualFileVisitor
 import okio.buffer
 import okio.sink
 import okio.source
-import org.jetbrains.annotations.NotNull
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.ClipboardOwner
@@ -29,10 +23,8 @@ import java.util.*
 
 
 interface TaskLoadListener {
-    fun onTaskLoad(tasks: List<TaskModel>)
+    fun showTasks(tasks: List<TaskModel>)
     fun onInputParam(task: TaskModel)
-
-    fun showResults(tasks: List<TaskModel>)
 }
 
 class CaoTaskManager(private val listener: TaskLoadListener, private val project: Project) {
@@ -75,7 +67,7 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
 
         println("tasks size ${tasks.size}")
 
-        listener.onTaskLoad(tasks)
+        listener.showTasks(tasks)
     }
 
     fun executeTask(task: TaskModel) {
@@ -104,11 +96,11 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
                     val listOfTaskObject: Type = object : TypeToken<ArrayList<TaskModel?>?>() {}.type
                     tempResult.clear()
                     tempResult.addAll(Gson().fromJson(content, listOfTaskObject))
-                    listener.showResults(tempResult)
+                    listener.showTasks(tempResult)
                 }
             }
         } else {
-            listener.showResults(task.options)
+            listener.showTasks(task.options)
         }
     }
 

@@ -5,10 +5,12 @@ import com.ss.android.ugc.aweme.cao.plugin.ui.CaoPluginToolWindow
 import com.ss.android.ugc.aweme.cao.plugin.CaoTaskManager
 import com.ss.android.ugc.aweme.cao.plugin.ui.TaskTableModel
 import com.ss.android.ugc.aweme.cao.plugin.match
+import com.ss.android.ugc.aweme.cao.plugin.ui.TaskList
+import com.ss.android.ugc.aweme.cao.plugin.ui.TaskListModel
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
-class QueryKeyListener(val window: CaoPluginToolWindow, val textField: JBTextField, val taskManager: CaoTaskManager, val tableModel: TaskTableModel): KeyListener {
+class QueryKeyListener(val textField: JBTextField, val taskManager: CaoTaskManager, val window: CaoPluginToolWindow): KeyListener {
 
     override fun keyTyped(e: KeyEvent?) {
 
@@ -18,8 +20,7 @@ class QueryKeyListener(val window: CaoPluginToolWindow, val textField: JBTextFie
         // 处理搜索
         val search = textField.text
         val filterList = taskManager.tasks.filter { it.match(search) }
-        tableModel.updateData(filterList)
-        window.updateTableMaxWidth()
+        window.updateList(filterList)
     }
 
     override fun keyReleased(e: KeyEvent?) {

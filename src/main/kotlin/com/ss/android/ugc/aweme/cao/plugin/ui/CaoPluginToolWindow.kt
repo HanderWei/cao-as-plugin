@@ -22,29 +22,21 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
     private val taskManager: CaoTaskManager by lazy { CaoTaskManager(taskLoadListener, project) }
     private val taskLoadListener by lazy {
         object : TaskLoadListener {
-            override fun onTaskLoad(tasks: List<TaskModel>) {
-                // 填充UI
-//                tableModel.updateData(tasks)
-//                updateTableMaxWidth()
-
-                taskList.updateTasks(tasks)
-                taskManager.currentTasks = tasks as MutableList<TaskModel>
+            override fun showTasks(tasks: List<TaskModel>) {
+                updateList(tasks)
             }
 
             override fun onInputParam(task: TaskModel) {
                 val dialog = InputParamDialog(project, task, taskManager)
                 dialog.showAndGet()
             }
-
-            override fun showResults(tasks: List<TaskModel>) {
-                taskList.updateTasks(tasks)
-                taskManager.currentTasks = tasks as MutableList<TaskModel>
-            }
         }
     }
 
-    private val tableModel  = TaskTableModel()
-    private val table = TaskTable(tableModel)
+    fun updateList(tasks: List<TaskModel>) {
+        taskList.updateTasks(tasks)
+        taskManager.currentTasks = tasks as MutableList<TaskModel>
+    }
 
     private val taskList = TaskList()
 
@@ -62,37 +54,20 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
         val queryField = JBTextField()
         queryField.toolTipText = "Enter Search"
         queryField.setTextToTriggerEmptyTextStatus("Enter Search")
-        queryField.addKeyListener(QueryKeyListener(this, queryField, taskManager, tableModel))
+        queryField.addKeyListener(QueryKeyListener(queryField, taskManager, this))
         queryField.preferredSize = Dimension(panel.width, 30)
 
         val taskPanel = SimpleToolWindowPanel(true, true)
         taskList.addKeyListener(TaskKeyListener(this, taskManager))
         taskList.addMouseListener(TaskMouseListener(this, taskManager))
-
-//        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-//        table.tableHeader?.reorderingAllowed = false
-//        table.rowSelectionAllowed = true
-//        table.fillsViewportHeight = true
-//        table.setRowHeight(0, 200)
-//        table.addMouseListener(TaskMouseListener(this, taskManager))
-//        table.addKeyListener(TaskKeyListener(this, taskManager))
-//        panel.add(JBScrollPane(table, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER)
-//        updateTableMaxWidth()
-
         taskPanel.setContent(taskList)
-
         taskPanel.toolbar = queryField
-//        taskPanel.setContent(table)
-        setContent(taskPanel)
-    }
 
-    fun updateTableMaxWidth() {
-        table.columnModel?.getColumn(0)?.maxWidth = 30
-//        table.columnModel?.getColumn(2)?.maxWidth = 60
+        panel.add(taskPanel)
+        setContent(panel)
     }
 
     fun getSelectedTask(): TaskModel? {
-//        val row = table.selectedRow
         val row = taskList.selectedIndex
         if (row < 0 || taskManager.currentTasks.isEmpty() || row >= taskManager.currentTasks.size ) {
             return null
