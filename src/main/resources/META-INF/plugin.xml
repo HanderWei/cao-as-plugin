@@ -6,13 +6,12 @@
 
     <depends>com.intellij.modules.platform</depends>
 
+
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="org.jetbrains.plugins.template.services.MyApplicationService"/>
-        <projectService serviceImplementation="org.jetbrains.plugins.template.services.MyProjectService"/>
+        <toolWindow factoryClass="com.ss.android.ugc.aweme.cao.plugin.ui.CaoPluginToolWindowFactory" id="Cao" secondary="true" anchor="right"/>
     </extensions>
 
-    <applicationListeners>
-        <listener class="org.jetbrains.plugins.template.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup displayType="BALLOON" id="Cao"/>
+    </extensions>
 </idea-plugin>
