@@ -11,7 +11,7 @@ class TaskListModel : DefaultListModel<TaskListItemView>() {
 
 }
 
-class TaskList : JBList<TaskListItemView>() {
+class TaskListView : JBList<TaskListItemView>() {
 
     init {
         model = TaskListModel()

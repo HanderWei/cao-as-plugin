@@ -3,10 +3,7 @@ package com.ss.android.ugc.aweme.cao.plugin.listener
 import com.intellij.ui.components.JBTextField
 import com.ss.android.ugc.aweme.cao.plugin.ui.CaoPluginToolWindow
 import com.ss.android.ugc.aweme.cao.plugin.CaoTaskManager
-import com.ss.android.ugc.aweme.cao.plugin.ui.TaskTableModel
 import com.ss.android.ugc.aweme.cao.plugin.match
-import com.ss.android.ugc.aweme.cao.plugin.ui.TaskList
-import com.ss.android.ugc.aweme.cao.plugin.ui.TaskListModel
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
