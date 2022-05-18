@@ -63,6 +63,7 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
         val content = source.readUtf8Line()
         println("content: $content")
         val listOfTaskObject: Type = object : TypeToken<ArrayList<TaskModel?>?>() {}.type
+        tasks.clear()
         tasks.addAll(Gson().fromJson(content, listOfTaskObject))
 
         println("tasks size ${tasks.size}")
@@ -83,6 +84,10 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
             sink.writeUtf8(Gson().toJson(task)).flush()
             sink.writeUtf8("\n").flush()
             val content = source.readUtf8Line()
+
+            // 清除参数
+            task.method?.params?.clear()
+
             when (task.outputType) {
                 OutputType.CLIPBOARD.value -> {
                     writeToClipboard(content, null)

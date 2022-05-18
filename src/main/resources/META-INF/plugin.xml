@@ -8,10 +8,30 @@
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.ss.android.ugc.aweme.cao.plugin.ui.CaoPluginToolWindowFactory" id="Cao" secondary="true" anchor="right"/>
-    </extensions>
-
-    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow
+                id="Fast Job"
+                factoryClass="com.ss.android.ugc.aweme.cao.plugin.ui.CaoPluginToolWindowFactory"
+                secondary="true"
+                anchor="right"/>
         <notificationGroup displayType="BALLOON" id="Cao"/>
     </extensions>
+
+    <actions>
+        <action
+                id="cao.HomeAction"
+                text="Home"
+                description="Home"
+                icon="AllIcons.Nodes.HomeFolder"
+                class="com.ss.android.ugc.aweme.cao.plugin.actions.HomeAction"/>
+        <action
+                id="cao.RefreshAction"
+                text="Refresh"
+                description="Refresh"
+                icon="AllIcons.Actions.Refresh"
+                class="com.ss.android.ugc.aweme.cao.plugin.actions.RefreshAction"/>
+        <group id="cao.CaoActionsToolbar">
+            <reference id="cao.HomeAction"/>
+            <reference id="cao.RefreshAction"/>
+        </group>
+    </actions>
 </idea-plugin>
