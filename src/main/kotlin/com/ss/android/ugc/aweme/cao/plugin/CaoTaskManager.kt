@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -54,21 +55,25 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
     }
 
     private fun getTaskDataFromServer() {
-        Thread.sleep(300)
-        println("getTaskDataFromServer")
-        val socket = Socket(HOST, PC_PORT)
-        val sink = socket.sink().buffer()
-        val source = socket.source().buffer()
-        sink.writeUtf8("\n").flush()
-        val content = source.readUtf8Line()
-        println("content: $content")
-        val listOfTaskObject: Type = object : TypeToken<ArrayList<TaskModel?>?>() {}.type
-        tasks.clear()
-        tasks.addAll(Gson().fromJson(content, listOfTaskObject))
+        try {
+            Thread.sleep(300)
+            println("getTaskDataFromServer")
+            val socket = Socket(HOST, PC_PORT)
+            val sink = socket.sink().buffer()
+            val source = socket.source().buffer()
+            sink.writeUtf8("\n").flush()
+            val content = source.readUtf8Line()
+            println("content: $content")
+            val listOfTaskObject: Type = object : TypeToken<ArrayList<TaskModel?>?>() {}.type
+            tasks.clear()
+            tasks.addAll(Gson().fromJson(content, listOfTaskObject))
 
-        println("tasks size ${tasks.size}")
+            println("tasks size ${tasks.size}")
 
-        listener.showTasks(tasks)
+            listener.showTasks(tasks)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun executeTask(task: TaskModel) {
