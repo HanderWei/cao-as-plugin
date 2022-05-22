@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.ss.android.ugc.aweme.cao.plugin.*
 import com.ss.android.ugc.aweme.cao.plugin.listener.QueryKeyListener
@@ -77,9 +78,11 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
         queryField.preferredSize = Dimension(panel.width, 30)
 
         val taskPanel = SimpleToolWindowPanel(true, true)
+        val scrollPane = JBScrollPane()
+        scrollPane.setViewportView(taskListView)
         taskListView.addKeyListener(TaskKeyListener(this, taskManager))
         taskListView.addMouseListener(TaskMouseListener(this, taskManager))
-        taskPanel.setContent(taskListView)
+        taskPanel.setContent(scrollPane)
         taskPanel.toolbar = queryField
 
         panel.add(actionToolbar.component)
