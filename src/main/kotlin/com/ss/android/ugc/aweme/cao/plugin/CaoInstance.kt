@@ -13,5 +13,6 @@ object CaoInstance {
 
     fun refreshTasks() {
         taskManager?.loadData()
+        window?.clearQuery()
     }
 }

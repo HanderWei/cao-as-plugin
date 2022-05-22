@@ -19,6 +19,7 @@ import javax.swing.JPanel
 class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
 
     private val taskListView = TaskListView()
+    private val queryField = JBTextField()
 
     private val taskManager: CaoTaskManager by lazy {
         CaoTaskManager(taskLoadListener, project).apply {
@@ -41,6 +42,10 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
     fun showAllTasks() {
         taskListView.updateTasks(taskManager.tasks)
         taskManager.currentTasks = taskManager.tasks
+    }
+
+    fun clearQuery() {
+        queryField.text = ""
     }
 
     fun updateList(tasks: List<TaskModel>) {
@@ -71,7 +76,6 @@ class CaoPluginToolWindow(val project: Project): SimpleToolWindowPanel(true) {
 
 
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        val queryField = JBTextField()
         queryField.toolTipText = "Enter Search"
         queryField.setTextToTriggerEmptyTextStatus("Enter Search")
         queryField.addKeyListener(QueryKeyListener(queryField, taskManager, this))
