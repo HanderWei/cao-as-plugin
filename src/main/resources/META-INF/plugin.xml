@@ -14,6 +14,7 @@
                 secondary="true"
                 anchor="right"/>
         <notificationGroup displayType="BALLOON" id="Cao"/>
+        <applicationService serviceImplementation="com.ss.android.ugc.aweme.cao.plugin.service.PersistentService" />
     </extensions>
 
     <actions>
