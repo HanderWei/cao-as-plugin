@@ -4,12 +4,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.ss.android.ugc.aweme.cao.plugin.ExecutableMethod.Companion.getListFormatString
-import com.ss.android.ugc.aweme.cao.plugin.actions.HomeAction
 import com.ss.android.ugc.aweme.cao.plugin.service.PersistentService
 import okio.buffer
 import okio.sink
@@ -82,13 +80,13 @@ class CaoTaskManager(private val listener: TaskLoadListener, private val project
     fun executeTask(task: TaskModel) {
         if (task.method != null && task.method.params.size != task.method.paramsType.size) {
             if (!task.forceInputParams && PersistentService.getData(task)?.isNotEmpty() == true) {
-                val newTask = task.copy(forceInputParams = true, title = "[重新输入参数]", subTitle = "")
+                val newTask = task.copy(forceInputParams = true, title = "重新输入参数", subTitle = "")
                 val oldParamsList = PersistentService.getData(task) ?: emptyList()
                 val newList = mutableListOf<TaskModel>()
+                newList.add(newTask)
                 oldParamsList.forEach {
                     newList.add(it.copy(title = getListFormatString(it.method?.params), subTitle = getListFormatString(it.method?.paramsHint)))
                 }
-                newList.add(newTask)
                 listener.showTasks(newList)
             } else {
                 listener.onInputParam(task)

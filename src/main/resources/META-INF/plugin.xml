@@ -30,9 +30,17 @@
                 description="Refresh"
                 icon="AllIcons.Actions.Refresh"
                 class="com.ss.android.ugc.aweme.cao.plugin.actions.RefreshAction"/>
+        <action
+                id="cao.HelpAction"
+                text="Help"
+                description="Help"
+                icon="AllIcons.Actions.Help"
+                class="com.ss.android.ugc.aweme.cao.plugin.actions.HelpAction"/>
+
         <group id="cao.CaoActionsToolbar">
             <reference id="cao.HomeAction"/>
             <reference id="cao.RefreshAction"/>
+            <reference id="cao.HelpAction"/>
         </group>
     </actions>
 </idea-plugin>
